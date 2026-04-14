@@ -69,6 +69,7 @@ const autoNextTimer = ref<number | null>(null)
 const copyState = ref<'idle' | 'done' | 'failed'>('idle')
 const posterState = ref<'idle' | 'generating' | 'done' | 'failed'>('idle')
 const posterPreviewUrl = ref('')
+const isPosterModalVisible = ref(false)
 const posterError = ref('')
 const errorMessage = ref('')
 const DIMENSION_SCORE_MIN = 2
@@ -265,15 +266,20 @@ function resetAnswers(): void {
   })
 }
 
+function resetPosterPreviewState(): void {
+  posterState.value = 'idle'
+  posterPreviewUrl.value = ''
+  isPosterModalVisible.value = false
+  posterError.value = ''
+}
+
 function startTest(): void {
   stage.value = 'quiz'
   currentIndex.value = 0
   result.value = null
   isDimensionPanelCollapsed.value = true
   copyState.value = 'idle'
-  posterState.value = 'idle'
-  posterPreviewUrl.value = ''
-  posterError.value = ''
+  resetPosterPreviewState()
   errorMessage.value = ''
   resetAnswers()
 }
@@ -284,9 +290,7 @@ function restartTest(): void {
   result.value = null
   isDimensionPanelCollapsed.value = true
   copyState.value = 'idle'
-  posterState.value = 'idle'
-  posterPreviewUrl.value = ''
-  posterError.value = ''
+  resetPosterPreviewState()
   errorMessage.value = ''
   resetAnswers()
 }
@@ -328,9 +332,7 @@ function submitResult(): void {
     result.value = calculateQuizResult(answers)
     isDimensionPanelCollapsed.value = true
     stage.value = 'result'
-    posterState.value = 'idle'
-    posterPreviewUrl.value = ''
-    posterError.value = ''
+    resetPosterPreviewState()
     errorMessage.value = ''
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : '计算失败，请重试。'
@@ -488,10 +490,16 @@ function downloadPosterImage(): void {
   link.click()
 }
 
-function closePosterPreview(): void {
-  posterState.value = 'idle'
-  posterError.value = ''
-  posterPreviewUrl.value = ''
+function openPosterModal(): void {
+  if (!posterPreviewUrl.value) {
+    return
+  }
+
+  isPosterModalVisible.value = true
+}
+
+function closePosterModal(): void {
+  isPosterModalVisible.value = false
 }
 
 async function generateSharePoster(): Promise<void> {
@@ -509,6 +517,7 @@ async function generateSharePoster(): Promise<void> {
 
   posterState.value = 'generating'
   posterError.value = ''
+  isPosterModalVisible.value = false
 
   try {
     const width = 1080
@@ -641,13 +650,20 @@ async function generateSharePoster(): Promise<void> {
 
     posterPreviewUrl.value = canvas.toDataURL('image/png')
     posterState.value = 'done'
+    isPosterModalVisible.value = true
   } catch (error) {
     posterState.value = 'failed'
+    isPosterModalVisible.value = false
     posterError.value = error instanceof Error ? error.message : '海报生成失败，请稍后重试。'
   }
 }
 
 function handleKeyboard(event: KeyboardEvent): void {
+  if (event.key === 'Escape' && isPosterModalVisible.value) {
+    closePosterModal()
+    return
+  }
+
   if (stage.value !== 'quiz' || !currentQuestion.value) {
     return
   }
@@ -876,26 +892,20 @@ onBeforeUnmount(() => {
           >
             {{ posterState === 'generating' ? '海报生成中...' : posterPreviewUrl ? '重新生成分享海报' : '生成分享海报（含二维码）' }}
           </button>
+          <button
+            v-if="posterPreviewUrl && !isPosterModalVisible"
+            class="btn btn-ghost"
+            type="button"
+            @click="openPosterModal"
+          >
+            查看海报弹窗
+          </button>
         </div>
-        <p class="share-tip">点击生成后会在下方展示海报预览，扫码可直接打开本站。</p>
+        <p class="share-tip">点击生成后会通过弹窗展示蓝色海报预览，扫码可直接打开本站。</p>
         <p v-if="posterState === 'done'" class="share-tip share-tip-success">
-          海报已生成，下方可预览与保存。
+          海报已生成，弹窗内可预览与保存。
         </p>
         <p v-else-if="posterState === 'failed'" class="error-text">{{ posterError }}</p>
-
-        <div v-if="posterPreviewUrl" class="poster-preview-shell">
-          <p class="poster-preview-title">分享你的编程人格</p>
-          <p class="poster-preview-subtitle">长按预览图可保存到手机，或点击下方按钮保存原图。</p>
-
-          <div class="poster-preview-card">
-            <img :src="posterPreviewUrl" alt="OSTI 分享海报预览" loading="lazy" />
-          </div>
-
-          <div class="poster-preview-actions">
-            <button class="btn btn-poster-solid" type="button" @click="downloadPosterImage">保存海报</button>
-            <button class="btn btn-poster-outline" type="button" @click="closePosterPreview">收起预览</button>
-          </div>
-        </div>
       </article>
 
       <article class="match-card">
@@ -983,6 +993,34 @@ onBeforeUnmount(() => {
         <button class="btn btn-primary" type="button" @click="restartTest">返回首页</button>
       </div>
     </section>
+
+    <div
+      v-if="posterPreviewUrl && isPosterModalVisible"
+      class="poster-modal-mask"
+      role="dialog"
+      aria-modal="true"
+      aria-label="分享海报预览"
+      @click.self="closePosterModal"
+    >
+      <div class="poster-modal">
+        <div class="poster-modal-head">
+          <div>
+            <p class="poster-modal-title">分享海报预览</p>
+            <p class="poster-modal-subtitle">蓝色主题海报，扫码可直接打开本站。</p>
+          </div>
+          <button class="poster-close-btn" type="button" @click="closePosterModal">关闭</button>
+        </div>
+
+        <div class="poster-modal-body">
+          <img :src="posterPreviewUrl" alt="OSTI 分享海报预览" loading="lazy" />
+        </div>
+
+        <div class="poster-modal-actions">
+          <button class="btn btn-primary" type="button" @click="downloadPosterImage">保存海报</button>
+          <button class="btn btn-ghost" type="button" @click="closePosterModal">完成</button>
+        </div>
+      </div>
+    </div>
   </main>
 </template>
 
@@ -1557,60 +1595,83 @@ p {
   font-weight: 600;
 }
 
-.poster-preview-shell {
-  margin-top: 14px;
-  border-radius: 18px;
+.poster-modal-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(14, 31, 62, 0.58);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.poster-modal {
+  width: min(92vw, 520px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  border-radius: 20px;
+  border: 1px solid #ccddff;
+  background: linear-gradient(168deg, #eef5ff 0%, #e5efff 54%, #f5f9ff 100%);
+  box-shadow: 0 22px 52px rgba(17, 39, 76, 0.32);
   padding: 14px;
-  background: linear-gradient(165deg, #ff9137 0%, #ff6a2d 54%, #ee4c2f 100%);
-  color: #fff;
 }
 
-.poster-preview-title {
-  text-align: center;
+.poster-modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.poster-modal-title {
+  color: #1e4b95;
   font-weight: 800;
-  letter-spacing: 0.01em;
 }
 
-.poster-preview-subtitle {
-  margin-top: 6px;
-  text-align: center;
-  font-size: 0.86rem;
-  color: rgba(255, 255, 255, 0.92);
+.poster-modal-subtitle {
+  margin-top: 4px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #5b7495;
 }
 
-.poster-preview-card {
+.poster-close-btn {
+  border-radius: 10px;
+  border: 1px solid #cddfff;
+  background: #fff;
+  color: #2a5aa9;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.poster-close-btn:hover {
+  background: #f4f8ff;
+}
+
+.poster-modal-body {
   margin-top: 12px;
   display: flex;
   justify-content: center;
 }
 
-.poster-preview-card img {
+.poster-modal-body img {
   width: min(100%, 360px);
-  border-radius: 16px;
+  border-radius: 14px;
   display: block;
   background: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  box-shadow: 0 14px 30px rgba(61, 18, 0, 0.22);
+  border: 1px solid #d8e7ff;
+  box-shadow: 0 12px 26px rgba(19, 42, 83, 0.2);
 }
 
-.poster-preview-actions {
+.poster-modal-actions {
   margin-top: 12px;
   display: flex;
-  justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-}
-
-.btn-poster-solid {
-  color: #eb5824;
-  background: #fff;
-  box-shadow: none;
-}
-
-.btn-poster-outline {
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.14);
 }
 
 .match-list {
@@ -1869,7 +1930,7 @@ p {
     flex-direction: column;
   }
 
-  .poster-preview-actions {
+  .poster-modal-actions {
     flex-direction: column;
   }
 
