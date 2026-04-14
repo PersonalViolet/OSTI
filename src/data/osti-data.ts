@@ -283,7 +283,7 @@ export const QUESTION_BANK: QuizQuestion[] = [
     options: [
       { key: 'A', text: '当场红温，回宿舍还在内耗。' },
       { key: 'B', text: '会卡壳一阵，但晚点能缓过来。' },
-      { key: 'C', text: '提炼有用意见，其他当背景音。' },
+      { key: 'C', text: '无所谓，只提炼有用意见，其他当背景音。' },
     ],
   },
   {
@@ -291,11 +291,11 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'S2',
     scienceHint: '自我清晰度',
-    prompt: '选课周到了，面对“凑学分、追兴趣、避早八”，你通常？',
+    prompt: '社团活动和核心课程撞时间时，你通常怎么选？',
     options: [
-      { key: 'A', text: '先跟风选，选完再说。' },
-      { key: 'B', text: '大方向有，但每次都会改课表。' },
-      { key: 'C', text: '目标明确，按自己的路线选。' },
+      { key: 'A', text: '谁催得急就先去，临场再决定。' },
+      { key: 'B', text: '先看当周压力，再动态调整安排。' },
+      { key: 'C', text: '按长期目标取舍，提前排好优先级。' },
     ],
   },
   {
@@ -303,11 +303,11 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'S2',
     scienceHint: '价值排序',
-    prompt: '早八想逃课又怕被抓，同时社团也在喊人，你更像？',
+    prompt: '早八大家都在课堂上课，也有人逃课/睡觉，你会如何选择？',
     options: [
-      { key: 'A', text: '先看风向，别人去哪我去哪。' },
-      { key: 'B', text: '问问搭子意见，再综合判断。' },
-      { key: 'C', text: '按自己优先级直接取舍。' },
+      { key: 'A', text: '跟着人群决定肯定没错，别人干嘛我干嘛' },
+      { key: 'B', text: '会考虑要干嘛，但要考虑时间。' },
+      { key: 'C', text: '清晰的目标，按计划执行。' },
     ],
   },
   {
@@ -315,11 +315,11 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'S3',
     scienceHint: '成长动机',
-    prompt: '新学期遇到“保绩点”和“冲上限”，你常开哪种模式？',
+    prompt: '老师布置的期末大作业，遇到“稳过”与“高难挑战”两种选择时，你常选哪种？',
     options: [
-      { key: 'A', text: '先稳住学分，别给自己上强度。' },
-      { key: 'B', text: '看当周压力，有空就冲一下。' },
-      { key: 'C', text: '主动开新副本，愿意卷出上限。' },
+      { key: 'A', text: '先保稳，确保结果不翻车。' },
+      { key: 'B', text: '先做标准版，再看状态加码。' },
+      { key: 'C', text: '优先挑战高难度，边做边升级。' },
     ],
   },
   {
@@ -327,11 +327,11 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'S3',
     scienceHint: '程序员场景',
-    prompt: '课程大作业开工时，你更像哪位同学？',
+    prompt: '课程项目要用不熟悉的新技术时，你通常会？',
     options: [
-      { key: 'A', text: '先糊个能跑版，保住及格线。' },
-      { key: 'B', text: '先交可用版，再慢慢迭代。' },
-      { key: 'C', text: '边做边重构，顺手把性能抠了。' },
+      { key: 'A', text: '继续用熟悉方案，先把功能交付。' },
+      { key: 'B', text: '核心模块试新技术，其余保持稳妥。' },
+      { key: 'C', text: '直接上新栈做完整实现，顺便沉淀模板。' },
     ],
   },
   {
@@ -423,16 +423,18 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'A1',
     scienceHint: '反向题',
-    prompt: '图书馆有人主动帮你占到位，你脑内 OS 是？',
+    prompt: '教室有人主动帮你占到位，你脑内 OS 是？',
     options: [
       { key: 'A', text: '你人还怪好嘞。' },
       { key: 'B', text: '先感谢，再观察。' },
-      { key: 'C', text: '这不会有隐藏剧情吧。' },
+      { key: 'C', text: '这不会有隐藏CG吧。' },
+      { key: 'D', text: '肯定心里有诈' }
     ],
     scoreMap: {
       A: 3,
       B: 2,
-      C: 1,
+      C: 3,
+      D: 1
     },
   },
   {
@@ -440,11 +442,11 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'A2',
     scienceHint: '规则观',
-    prompt: '学院流程很繁琐但能过审，你会？',
+    prompt: '你想干某些事，通过学院流程很繁琐但能过审，如果不通过学院流程可能会违纪，你会？',
     options: [
       { key: 'A', text: '按流程走，避免麻烦。' },
       { key: 'B', text: '先沟通优化，必要时再走旧流程。' },
-      { key: 'C', text: '先把核心结果做出来，再补流程。' },
+      { key: 'C', text: '管他，先做了再说。' },
     ],
   },
   {
@@ -456,7 +458,7 @@ export const QUESTION_BANK: QuizQuestion[] = [
     options: [
       { key: 'A', text: '底线就是底线，不想越线。' },
       { key: 'B', text: '原则上遵守，特殊情况灵活。' },
-      { key: 'C', text: '规则是工具，目标才是主线。' },
+      { key: 'C', text: '规则就是用来打破的。' },
     ],
   },
   {
@@ -468,7 +470,7 @@ export const QUESTION_BANK: QuizQuestion[] = [
     options: [
       { key: 'A', text: '不太需要，先把模板套上。' },
       { key: 'B', text: '有最好，没有也能做。' },
-      { key: 'C', text: '需要，不然很难坚持。' },
+      { key: 'C', text: '需要，有意义就做，没有就滚蛋。' },
     ],
   },
   {
@@ -488,12 +490,17 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'Ac1',
     scienceHint: '趋近动机',
-    prompt: '上课时你在“听老师、看网课回放、打游戏”之间更关注什么？',
+    prompt: '你在教室上课时会选择听老师、看网课、还是打游戏？',
     options: [
-      { key: 'A', text: '先保底不翻车，别被点名抓现行。' },
-      { key: 'B', text: '课堂收益和当下状态平衡。' },
-      { key: 'C', text: '优先选最能提升能力的做法。' },
+      { key: 'A', text: '听老师，优先跟住课堂节奏。' },
+      { key: 'B', text: '看网课，按自己的节奏补知识。' },
+      { key: 'C', text: '打游戏，先放松一下再说。' },
     ],
+    scoreMap: {
+      A: 1,
+      B: 2,
+      C: 3,
+    },
   },
   {
     id: 20,
@@ -524,7 +531,7 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'Ac2',
     scienceHint: '程序员场景',
-    prompt: '课程项目演示前突然报错，你第一步通常是？',
+    prompt: '你的课程项目如学生管理系统，演示前突然报错，你第一步通常是？',
     options: [
       { key: 'A', text: '先收集日志，稳住别乱改。' },
       { key: 'B', text: '先复现，再按优先级处理。' },
@@ -601,11 +608,12 @@ export const QUESTION_BANK: QuizQuestion[] = [
     category: 'regular',
     dimension: 'So2',
     scienceHint: '距离管理',
-    prompt: '你理想的校园亲密关系距离是？',
+    prompt: '异性在上课时主动跟你聊天并想认识你，此时的你会怎么想？',
     options: [
-      { key: 'A', text: '最好高频黏在一起。' },
-      { key: 'B', text: '可以亲密，也能各自忙。' },
-      { key: 'C', text: '亲密但边界清晰，彼此都轻松。' },
+      { key: 'A', text: '加油触发隐藏CG！' },
+      { key: 'B', text: '很开心，希望认识新朋友。' },
+      { key: 'C', text: '可以正常交流，也能各自忙。' },
+      { key: 'D', text: '确定她的意图，谨慎做出选择。' },
     ],
   },
   {
@@ -636,10 +644,10 @@ export const QUESTION_BANK: QuizQuestion[] = [
     id: 31,
     category: 'special',
     subtitle: '整活入口',
-    prompt: '周末从图书馆下线后，你最常开哪种回血模式？',
+    prompt: '完成一周中最后的一节课后，你最常开哪种回血模式？',
     options: [
       { key: 'A', text: '床 + 短视频 + 电子榨菜，直接离线。' },
-      { key: 'B', text: '和搭子特种兵出行/运动，主打去班味。' },
+      { key: 'B', text: '和搭子特种兵出行/运动，探索大世界。' },
       { key: 'C', text: '酒局或夜谈局，微醺模式上线。' },
       { key: 'D', text: '折腾设备、刷机、做小工具。' },
     ],
@@ -659,12 +667,12 @@ export const QUESTION_BANK: QuizQuestion[] = [
     id: 33,
     category: 'special',
     subtitle: '隐藏人格入口',
-    prompt: '如果你不考虑金钱，你会选择什么操作系统的手机？',
+    prompt: '你更喜欢到山姆超市买菜，还是在菜市场买菜？',
     options: [
-      { key: 'A', text: 'iOS 系统，生态和丝滑体验都要。' },
-      { key: 'B', text: 'Android 系统，可玩性和自由度拉满。' },
-      { key: 'C', text: 'HarmonyOS 系统，多设备协同更顺。' },
-      { key: 'D', text: '看手感和需求，实用主义优先。' },
+      { key: 'A', text: '必须山姆超市，夯爆了' },
+      { key: 'B', text: '无所谓，哪个店都行。' },
+      { key: 'C', text: '菜市场' },
+      { key: 'D', text: '哪个近去哪里' },
     ],
   },
 ]
